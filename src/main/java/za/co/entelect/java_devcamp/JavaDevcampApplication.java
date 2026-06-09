@@ -9,5 +9,6 @@ public class JavaDevcampApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(JavaDevcampApplication.class, args);
 	}
+	
 
 }
