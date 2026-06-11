@@ -1,26 +1,27 @@
 package za.co.entelect.java_devcamp.controller;
 
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import za.co.entelect.java_devcamp.entity.Product;
+import za.co.entelect.java_devcamp.service.ProductService;
 
 @RestController
 @RequestMapping("/api/v1")
 public class ProductController {
 
-	private final JdbcTemplate jdbcTemplate;
+	private final ProductService productService;
 
-	public ProductController(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
+	public ProductController(ProductService productService) {
+		this.productService = productService;
 	}
 
 	@GetMapping("/fetchProducts")
-	public List<Map<String, Object>> fetchProducts() {
-		return jdbcTemplate.queryForList("SELECT * FROM public.products");
+	public List<Product> fetchProducts() {
+		return productService.fetchAllProducts();
 	}
 
 }

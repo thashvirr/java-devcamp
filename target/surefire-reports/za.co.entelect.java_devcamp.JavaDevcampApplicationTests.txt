@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: za.co.entelect.java_devcamp.JavaDevcampApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.981 s -- in za.co.entelect.java_devcamp.JavaDevcampApplicationTests
