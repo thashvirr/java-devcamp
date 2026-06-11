@@ -12,11 +12,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@Tag(name = "Health", description = "Application health and availability checks")
+@Tag(name = "Test endpoint")
 public class TestController {
 
 	@GetMapping("/test")
-	@Operation(summary = "Test endpoint", description = "Verifies that the application is running and accepting requests")
+	@Operation(summary = "Test endpoint", description = "Quick check to see if app is running")
 	@ApiResponse(responseCode = "200", description = "Application is available", content = @Content(schema = @Schema(example = "{\"message\": \"endpoint is available\"}")))
 	public Map<String, String> test() {
 		return Map.of("message", "endpoint is available");
