@@ -1,6 +1,9 @@
 /Users/thashvirr/Documents/DevCamp/repo/java-devcamp/src/main/java/za/co/entelect/java_devcamp/JavaDevcampApplication.java
+/Users/thashvirr/Documents/DevCamp/repo/java-devcamp/src/main/java/za/co/entelect/java_devcamp/config/OpenApiConfig.java
 /Users/thashvirr/Documents/DevCamp/repo/java-devcamp/src/main/java/za/co/entelect/java_devcamp/controller/CustomerController.java
 /Users/thashvirr/Documents/DevCamp/repo/java-devcamp/src/main/java/za/co/entelect/java_devcamp/controller/HomeController.java
 /Users/thashvirr/Documents/DevCamp/repo/java-devcamp/src/main/java/za/co/entelect/java_devcamp/controller/ProductController.java
 /Users/thashvirr/Documents/DevCamp/repo/java-devcamp/src/main/java/za/co/entelect/java_devcamp/controller/TestController.java
-
+/Users/thashvirr/Documents/DevCamp/repo/java-devcamp/src/main/java/za/co/entelect/java_devcamp/entity/Product.java
+/Users/thashvirr/Documents/DevCamp/repo/java-devcamp/src/main/java/za/co/entelect/java_devcamp/repository/ProductRepository.java
+/Users/thashvirr/Documents/DevCamp/repo/java-devcamp/src/main/java/za/co/entelect/java_devcamp/service/ProductService.java
