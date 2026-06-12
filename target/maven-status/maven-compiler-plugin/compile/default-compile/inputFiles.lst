@@ -5,5 +5,8 @@
 /Users/thashvirr/Documents/DevCamp/repo/java-devcamp/src/main/java/za/co/entelect/java_devcamp/controller/ProductController.java
 /Users/thashvirr/Documents/DevCamp/repo/java-devcamp/src/main/java/za/co/entelect/java_devcamp/controller/TestController.java
 /Users/thashvirr/Documents/DevCamp/repo/java-devcamp/src/main/java/za/co/entelect/java_devcamp/entity/Product.java
+/Users/thashvirr/Documents/DevCamp/repo/java-devcamp/src/main/java/za/co/entelect/java_devcamp/exception/CustomerNotFoundException.java
+/Users/thashvirr/Documents/DevCamp/repo/java-devcamp/src/main/java/za/co/entelect/java_devcamp/exception/GlobalExceptionHandler.java
+/Users/thashvirr/Documents/DevCamp/repo/java-devcamp/src/main/java/za/co/entelect/java_devcamp/exception/ProductNotFoundException.java
 /Users/thashvirr/Documents/DevCamp/repo/java-devcamp/src/main/java/za/co/entelect/java_devcamp/repository/ProductRepository.java
 /Users/thashvirr/Documents/DevCamp/repo/java-devcamp/src/main/java/za/co/entelect/java_devcamp/service/ProductService.java
