@@ -1,3 +1,5 @@
+C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\config\JsonAccessDeniedHandler.java
+C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\config\JsonAuthenticationEntryPoint.java
 C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\config\OpenApiConfig.java
 C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\config\SecurityConfig.java
 C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\controller\AuthController.java
@@ -8,9 +10,11 @@ C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za
 C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\controller\TestController.java
 C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\dto\LoginRequest.java
 C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\dto\LoginResponse.java
+C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\dto\ProductTakeUpResponse.java
 C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\entity\ApplicationUser.java
 C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\entity\Customer.java
 C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\entity\Product.java
+C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\entity\ProductCustomerType.java
 C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\exception\CustomerNotFoundException.java
 C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\exception\GlobalExceptionHandler.java
 C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\exception\ProductNotFoundException.java
@@ -18,6 +22,7 @@ C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za
 C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\exception\UserNotFoundException.java
 C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\JavaDevcampApplication.java
 C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\repository\ApplicationUserRepository.java
+C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\repository\ProductCustomerTypeRepository.java
 C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\repository\ProductRepository.java
 C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\service\ApplicationUserDetailsService.java
 C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\service\AuthService.java

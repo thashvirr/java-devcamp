@@ -2,11 +2,17 @@ za\co\entelect\java_devcamp\dto\LoginResponse.class
 za\co\entelect\java_devcamp\service\ApplicationUserDetailsService.class
 za\co\entelect\java_devcamp\repository\ApplicationUserRepository.class
 za\co\entelect\java_devcamp\service\CustomerService.class
+za\co\entelect\java_devcamp\dto\ProductTakeUpResponse.class
 za\co\entelect\java_devcamp\service\ProfileService.class
 za\co\entelect\java_devcamp\exception\UserAlreadyExistsException.class
+za\co\entelect\java_devcamp\entity\ProductCustomerType.class
+za\co\entelect\java_devcamp\repository\ProductCustomerTypeRepository.class
+za\co\entelect\java_devcamp\config\JsonAuthenticationEntryPoint.class
 za\co\entelect\java_devcamp\entity\ApplicationUser.class
+za\co\entelect\java_devcamp\entity\ProductCustomerType$ProductCustomerTypeId.class
 za\co\entelect\java_devcamp\service\JwtService.class
 za\co\entelect\java_devcamp\service\AuthService.class
+za\co\entelect\java_devcamp\config\JsonAccessDeniedHandler.class
 za\co\entelect\java_devcamp\dto\LoginRequest.class
 za\co\entelect\java_devcamp\exception\UserNotFoundException.class
 za\co\entelect\java_devcamp\controller\AuthController.class

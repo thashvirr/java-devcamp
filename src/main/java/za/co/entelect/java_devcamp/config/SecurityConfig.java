@@ -50,13 +50,23 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		JsonAuthenticationEntryPoint authenticationEntryPoint = new JsonAuthenticationEntryPoint();
+		JsonAccessDeniedHandler accessDeniedHandler = new JsonAccessDeniedHandler();
+
 		http.csrf(csrf -> csrf.disable())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers(PUBLIC_ENDPOINTS).permitAll()
-						.requestMatchers("/api/v1/profile", "/api/v1/customers/get").authenticated()
+						.requestMatchers("/api/v1/profile", "/api/v1/customers/get", "/api/v1/products/takeUp/**")
+								.authenticated()
 						.anyRequest().permitAll())
-				.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+				.exceptionHandling(exceptions -> exceptions
+						.authenticationEntryPoint(authenticationEntryPoint)
+						.accessDeniedHandler(accessDeniedHandler))
+				.oauth2ResourceServer(oauth2 -> oauth2
+						.jwt(Customizer.withDefaults())
+						.authenticationEntryPoint(authenticationEntryPoint)
+						.accessDeniedHandler(accessDeniedHandler));
 
 		return http.build();
 	}
