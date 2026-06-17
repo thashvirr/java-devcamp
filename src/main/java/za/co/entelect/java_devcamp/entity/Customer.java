@@ -11,7 +11,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 				  "email": "jane.doe@example.com",
 				  "first_name": "Jane",
 				  "last_name": "Doe",
-				  "id_number": "9001015800085"
+				  "id_number": "9001015800085",
+				  "password": "MySecurePassword1$"
 				}
 				""")
 public class Customer {
@@ -30,6 +31,9 @@ public class Customer {
 	@JsonProperty("last_name")
 	@Schema(example = "Doe")
 	private String lastName;
+
+	@Schema(example = "MySecurePassword1$", description = "Password for login credentials")
+	private String password;
 
 	public Customer() {
 	}
@@ -64,6 +68,14 @@ public class Customer {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 }

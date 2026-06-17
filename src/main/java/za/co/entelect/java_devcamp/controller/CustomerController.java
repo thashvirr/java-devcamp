@@ -58,7 +58,7 @@ public class CustomerController {
 	@PostMapping(value = "/customers/create", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(
 			summary = "Create a customer",
-			description = "Creates a new customer in the CIS schema",
+			description = "Creates a new customer in the CIS schema and login credentials in auth.application_user",
 			requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
 					required = true,
 					content = @Content(
@@ -72,10 +72,12 @@ public class CustomerController {
 											  "email": "jane.doe@example.com",
 											  "first_name": "Jane",
 											  "last_name": "Doe",
-											  "id_number": "9001015800085"
+											  "id_number": "9001015800085",
+											  "password": "MySecurePassword1$"
 											}
 											"""))))
 	@ApiResponse(responseCode = "201", description = "Customer created successfully", content = @Content(schema = @Schema(additionalProperties = Schema.AdditionalPropertiesValue.TRUE, example = "{\"customer_id\": 4, \"email\": \"jane.doe@example.com\", \"first_name\": \"Jane\", \"last_name\": \"Doe\", \"id_number\": \"9001015800085\", \"customer_types_id\": 1}")))
+	@ApiResponse(responseCode = "409", description = "User with matching email already exists")
 	public ResponseEntity<Map<String, Object>> createCustomer(@RequestBody Customer customer) {
 		logger.info("Creating customer with email={}", customer.getEmail());
 		Map<String, Object> createdCustomer = customerService.createCustomer(customer);

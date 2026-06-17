@@ -14,6 +14,7 @@ C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za
 C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\exception\CustomerNotFoundException.java
 C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\exception\GlobalExceptionHandler.java
 C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\exception\ProductNotFoundException.java
+C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\exception\UserAlreadyExistsException.java
 C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\exception\UserNotFoundException.java
 C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\JavaDevcampApplication.java
 C:\Users\thashvir.rajcoomar\Documents\devcamp\repo\java-devcamp\src\main\java\za\co\entelect\java_devcamp\repository\ApplicationUserRepository.java

@@ -4,18 +4,30 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import za.co.entelect.java_devcamp.entity.ApplicationUser;
 import za.co.entelect.java_devcamp.entity.Customer;
 import za.co.entelect.java_devcamp.exception.CustomerNotFoundException;
+import za.co.entelect.java_devcamp.exception.UserAlreadyExistsException;
+import za.co.entelect.java_devcamp.repository.ApplicationUserRepository;
 
 @Service
 public class CustomerService {
 
 	private final JdbcTemplate jdbcTemplate;
+	private final ApplicationUserRepository applicationUserRepository;
+	private final PasswordEncoder passwordEncoder;
 
-	public CustomerService(JdbcTemplate jdbcTemplate) {
+	public CustomerService(
+			JdbcTemplate jdbcTemplate,
+			ApplicationUserRepository applicationUserRepository,
+			PasswordEncoder passwordEncoder) {
 		this.jdbcTemplate = jdbcTemplate;
+		this.applicationUserRepository = applicationUserRepository;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	public List<Map<String, Object>> fetchAllCustomers() {
@@ -40,8 +52,13 @@ public class CustomerService {
 		return results.get(0);
 	}
 
+	@Transactional
 	public Map<String, Object> createCustomer(Customer customer) {
-		return jdbcTemplate.queryForMap(
+		if (applicationUserRepository.findFirstByEmailIgnoreCase(customer.getEmail()).isPresent()) {
+			throw new UserAlreadyExistsException(customer.getEmail());
+		}
+
+		Map<String, Object> createdCustomer = jdbcTemplate.queryForMap(
 				"""
 				INSERT INTO cis.customer
 				(
@@ -63,6 +80,14 @@ public class CustomerService {
 				customer.getIdNumber(),
 				customer.getLastName(),
 				1L);
+
+		ApplicationUser applicationUser = new ApplicationUser();
+		applicationUser.setEmail(customer.getEmail());
+		applicationUser.setPassword(passwordEncoder.encode(customer.getPassword()));
+		applicationUser.setRole("user");
+		applicationUserRepository.save(applicationUser);
+
+		return createdCustomer;
 	}
 
 }

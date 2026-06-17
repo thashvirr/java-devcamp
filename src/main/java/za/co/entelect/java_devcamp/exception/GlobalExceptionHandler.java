@@ -28,6 +28,12 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", ex.getMessage()));
 	}
 
+	@ExceptionHandler(UserAlreadyExistsException.class)
+	public ResponseEntity<Map<String, String>> handleUserAlreadyExists(UserAlreadyExistsException ex) {
+		logger.error("User creation failed: {}", ex.getMessage());
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", ex.getMessage()));
+	}
+
 	@ExceptionHandler(UserNotFoundException.class)
 	public ResponseEntity<Map<String, String>> handleUserNotFound(UserNotFoundException ex) {
 		logger.error("User lookup failed: {}", ex.getMessage());

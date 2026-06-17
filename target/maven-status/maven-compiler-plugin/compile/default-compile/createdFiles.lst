@@ -3,6 +3,7 @@ za\co\entelect\java_devcamp\service\ApplicationUserDetailsService.class
 za\co\entelect\java_devcamp\repository\ApplicationUserRepository.class
 za\co\entelect\java_devcamp\service\CustomerService.class
 za\co\entelect\java_devcamp\service\ProfileService.class
+za\co\entelect\java_devcamp\exception\UserAlreadyExistsException.class
 za\co\entelect\java_devcamp\entity\ApplicationUser.class
 za\co\entelect\java_devcamp\service\JwtService.class
 za\co\entelect\java_devcamp\service\AuthService.class
