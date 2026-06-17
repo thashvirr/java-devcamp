@@ -2,7 +2,7 @@
 
 Spring Boot REST API for a bank product catalogue. Customers can browse products, check eligibility by customer type, and authenticate via JWT.
 
-**Stack:** Java 17 · Spring Boot 4.0.6 · PostgreSQL · Flyway · Spring Security (JWT) · springdoc-openAPI
+**Stack:** Java 17 · Spring Boot 4.0.6 · PostgreSQL · Flyway · Spring Security (JWT)
 
 ## Prerequisites
 
@@ -22,7 +22,6 @@ The application starts on **http://localhost:3000**.
 | Resource | URL |
 |----------|-----|
 | Home page | http://localhost:3000/ |
-| Swagger UI | http://localhost:3000/swagger-ui.html |
 | Health check | http://localhost:3000/health |
 
 ## Project structure
@@ -30,7 +29,7 @@ The application starts on **http://localhost:3000**.
 ```
 src/main/java/za/co/entelect/java_devcamp/
 ├── JavaDevcampApplication.java    # Application entry point
-├── config/                        # Security, OpenAPI, JSON error handlers
+├── config/                        # Security and JSON error handlers
 ├── constant/                      # Shared constants (e.g. customer types)
 ├── controller/                    # REST and MVC controllers
 ├── dto/
@@ -306,5 +305,3 @@ mvn test
 # Package
 mvn package
 ```
-
-Interactive API documentation is available at `/swagger-ui.html` when the application is running.

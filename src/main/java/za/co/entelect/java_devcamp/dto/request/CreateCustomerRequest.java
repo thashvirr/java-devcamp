@@ -2,27 +2,19 @@ package za.co.entelect.java_devcamp.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
-@Schema(description = "Request body for customer registration")
 public class CreateCustomerRequest {
 
-	@Schema(example = "jane.doe@example.com")
 	private String email;
 
 	@JsonProperty("first_name")
-	@Schema(example = "Jane")
 	private String firstName;
 
 	@JsonProperty("id_number")
-	@Schema(example = "9001015800085")
 	private String idNumber;
 
 	@JsonProperty("last_name")
-	@Schema(example = "Doe")
 	private String lastName;
 
-	@Schema(example = "MySecurePassword1$", description = "Password for login credentials")
 	private String password;
 
 	public CreateCustomerRequest() {
