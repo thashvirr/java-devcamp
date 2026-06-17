@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +23,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import za.co.entelect.java_devcamp.entity.Customer;
 import za.co.entelect.java_devcamp.service.CustomerService;
@@ -39,11 +42,17 @@ public class CustomerController {
 	}
 
 	@GetMapping("/customers/get")
-	@Operation(summary = "Fetch all customers", description = "Returns every customer from the CIS schema")
+	@Operation(
+			summary = "Fetch customers",
+			description = "Returns the logged-in customer's data, or every customer when the logged-in user has customer_types_id = 5",
+			security = @SecurityRequirement(name = "bearer-jwt"))
 	@ApiResponse(responseCode = "200", description = "Customers retrieved successfully", content = @Content(array = @ArraySchema(schema = @Schema(additionalProperties = Schema.AdditionalPropertiesValue.TRUE, example = "{\"customer_id\": 1, \"name\": \"Jane Doe\"}"))))
-	public List<Map<String, Object>> fetchCustomers() {
-		logger.info("Fetch all customers requested");
-		return customerService.fetchAllCustomers();
+	@ApiResponse(responseCode = "401", description = "Not authenticated")
+	@ApiResponse(responseCode = "404", description = "Customer not found")
+	public List<Map<String, Object>> fetchCustomers(@AuthenticationPrincipal Jwt jwt) {
+		String email = jwt.getSubject();
+		logger.info("Fetch customers requested for email={}", email);
+		return customerService.fetchCustomersForAuthenticatedUser(email);
 	}
 
 	@GetMapping("/customers/get/{id}")

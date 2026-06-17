@@ -17,6 +17,8 @@ import za.co.entelect.java_devcamp.repository.ApplicationUserRepository;
 @Service
 public class CustomerService {
 
+	private static final long ADMIN_CUSTOMER_TYPE_ID = 5L;
+
 	private final JdbcTemplate jdbcTemplate;
 	private final ApplicationUserRepository applicationUserRepository;
 	private final PasswordEncoder passwordEncoder;
@@ -32,6 +34,15 @@ public class CustomerService {
 
 	public List<Map<String, Object>> fetchAllCustomers() {
 		return jdbcTemplate.queryForList("SELECT * FROM cis.customer");
+	}
+
+	public List<Map<String, Object>> fetchCustomersForAuthenticatedUser(String email) {
+		Map<String, Object> authenticatedCustomer = fetchCustomerByEmail(email);
+		Object customerTypesId = authenticatedCustomer.get("customer_types_id");
+		if (customerTypesId instanceof Number number && number.longValue() == ADMIN_CUSTOMER_TYPE_ID) {
+			return fetchAllCustomers();
+		}
+		return List.of(authenticatedCustomer);
 	}
 
 	public Map<String, Object> fetchCustomerById(Long id) {
