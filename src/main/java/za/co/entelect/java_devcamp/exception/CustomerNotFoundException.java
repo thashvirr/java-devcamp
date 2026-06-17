@@ -6,4 +6,8 @@ public class CustomerNotFoundException extends RuntimeException {
 		super("Customer not found with customer_id: " + customerId);
 	}
 
+	public CustomerNotFoundException(String email) {
+		super("Customer not found with email: " + email);
+	}
+
 }

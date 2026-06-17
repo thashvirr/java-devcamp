@@ -31,6 +31,15 @@ public class CustomerService {
 		return results.get(0);
 	}
 
+	public Map<String, Object> fetchCustomerByEmail(String email) {
+		List<Map<String, Object>> results = jdbcTemplate.queryForList(
+				"SELECT * FROM cis.customer WHERE LOWER(email) = LOWER(?)", email);
+		if (results.isEmpty()) {
+			throw new CustomerNotFoundException(email);
+		}
+		return results.get(0);
+	}
+
 	public Map<String, Object> createCustomer(Customer customer) {
 		return jdbcTemplate.queryForMap(
 				"""

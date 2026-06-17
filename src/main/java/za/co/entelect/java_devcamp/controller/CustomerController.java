@@ -38,7 +38,7 @@ public class CustomerController {
 		this.customerService = customerService;
 	}
 
-	@GetMapping("/fetchCustomers")
+	@GetMapping("/customers/get")
 	@Operation(summary = "Fetch all customers", description = "Returns every customer from the CIS schema")
 	@ApiResponse(responseCode = "200", description = "Customers retrieved successfully", content = @Content(array = @ArraySchema(schema = @Schema(additionalProperties = Schema.AdditionalPropertiesValue.TRUE, example = "{\"customer_id\": 1, \"name\": \"Jane Doe\"}"))))
 	public List<Map<String, Object>> fetchCustomers() {
@@ -46,7 +46,7 @@ public class CustomerController {
 		return customerService.fetchAllCustomers();
 	}
 
-	@GetMapping("/fetchCustomer/{id}")
+	@GetMapping("/customers/get/{id}")
 	@Operation(summary = "Fetch customer by id", description = "Returns a single customer from the CIS schema by its id")
 	@ApiResponse(responseCode = "200", description = "Customer retrieved successfully", content = @Content(schema = @Schema(additionalProperties = Schema.AdditionalPropertiesValue.TRUE, example = "{\"customer_id\": 1, \"name\": \"Jane Doe\"}")))
 	@ApiResponse(responseCode = "404", description = "Customer not found")

@@ -31,7 +31,7 @@ public class ProductController {
 		this.productService = productService;
 	}
 
-	@GetMapping("/fetchProducts")
+	@GetMapping("/products/getAll")
 	@Operation(summary = "Fetch all products", description = "Returns every product in the catalogue")
 	@ApiResponse(responseCode = "200", description = "Products retrieved successfully", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Product.class))))
 	public List<Product> fetchProducts() {
@@ -39,13 +39,23 @@ public class ProductController {
 		return productService.fetchAllProducts();
 	}
 
-	@GetMapping("/fetchProduct/{id}")
+	@GetMapping("/products/get/{id}")
 	@Operation(summary = "Fetch product by id", description = "Returns a single product from the catalogue by its id")
 	@ApiResponse(responseCode = "200", description = "Product retrieved successfully", content = @Content(schema = @Schema(implementation = Product.class)))
 	@ApiResponse(responseCode = "404", description = "Product not found")
 	public Product fetchProductById(@PathVariable Long id) {
 		logger.info("Fetch product by id requested: id={}", id);
 		return productService.fetchProductById(id);
+	}
+
+	// Get eligible products for a customer
+	@GetMapping("/products/getEligible/{customerId}")
+	@Operation(summary = "Fetch eligible products for a customer", description = "Returns a list of products that are eligible for a customer")
+	@ApiResponse(responseCode = "200", description = "Eligible products retrieved successfully", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Product.class))))
+	@ApiResponse(responseCode = "404", description = "Customer not found")
+	public List<Product> fetchEligibleProducts(@PathVariable Long customerId) {
+		logger.info("Fetch eligible products for customer requested: customerId={}", customerId);
+		return productService.fetchEligibleProducts(customerId);
 	}
 
 }
