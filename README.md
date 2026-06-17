@@ -293,13 +293,55 @@ Key settings in `application.properties`:
 
 ---
 
+## Testing
+
+The project uses **JUnit 5** and **Mockito** for unit tests. Service-layer tests mock dependencies (repositories, `JdbcTemplate`, etc.) so they run quickly without a database.
+
+### Run tests
+
+```bash
+# All tests
+mvn test
+
+# Single test class
+mvn test -Dtest=ProductServiceTest
+```
+
+### Test layout
+
+```
+src/test/java/za/co/entelect/java_devcamp/
+├── JavaDevcampApplicationTests.java          # Spring context load (@SpringBootTest)
+└── service/
+    ├── ApplicationUserDetailsServiceTest.java
+    ├── AuthServiceTest.java
+    ├── CustomerServiceTest.java
+    ├── ProductServiceTest.java
+    └── ProfileServiceTest.java
+```
+
+### Coverage
+
+| Test class | What it covers |
+|------------|----------------|
+| `JavaDevcampApplicationTests` | Application context starts successfully |
+| `ProductServiceTest` | Fetch products, eligible products by customer type, take-up eligibility (active/inactive, type match/mismatch, not found) |
+| `CustomerServiceTest` | Fetch by id/email, admin vs non-admin listing, customer creation, duplicate email rejection |
+| `AuthServiceTest` | Successful login returns JWT response |
+| `ProfileServiceTest` | Profile with/without customer record, user not found |
+| `ApplicationUserDetailsServiceTest` | Load user details for Spring Security, username not found |
+
+Service tests use `@ExtendWith(MockitoExtension.class)` with `@Mock` and `@InjectMocks`. Assertions use **AssertJ** (included via Spring Boot test starters).
+
+---
+
 ## Development
 
 ```bash
 # Compile
 mvn compile
 
-# Run tests
+# Run tests (see Testing section above)
 mvn test
 
 # Package
