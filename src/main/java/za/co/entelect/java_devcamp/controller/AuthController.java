@@ -14,8 +14,8 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import za.co.entelect.java_devcamp.dto.LoginRequest;
-import za.co.entelect.java_devcamp.dto.LoginResponse;
+import za.co.entelect.java_devcamp.dto.request.LoginRequest;
+import za.co.entelect.java_devcamp.dto.response.LoginResponse;
 import za.co.entelect.java_devcamp.service.AuthService;
 
 @RestController

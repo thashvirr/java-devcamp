@@ -1,10 +1,10 @@
-package za.co.entelect.java_devcamp.dto;
+package za.co.entelect.java_devcamp.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "Product take-up eligibility result for the logged-in customer")
+@Schema(description = "Product take-up eligibility result for the authenticated customer")
 public class ProductTakeUpResponse {
 
 	@JsonProperty("customer_id")

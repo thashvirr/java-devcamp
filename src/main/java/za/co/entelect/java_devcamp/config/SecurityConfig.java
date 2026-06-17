@@ -8,6 +8,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -34,9 +35,8 @@ import com.nimbusds.jose.proc.SecurityContext;
 public class SecurityConfig {
 
 	private static final String[] PUBLIC_ENDPOINTS = {
-			"/api/v1/auth/login",
-			"/test",
 			"/",
+			"/api/v1/auth/login",
 			"/v3/api-docs/**",
 			"/swagger-ui/**",
 			"/swagger-ui.html",
@@ -57,7 +57,11 @@ public class SecurityConfig {
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers(PUBLIC_ENDPOINTS).permitAll()
-						.requestMatchers("/api/v1/profile", "/api/v1/customers/get", "/api/v1/products/takeUp/**")
+						.requestMatchers(HttpMethod.POST, "/api/v1/customers").permitAll()
+						.requestMatchers(
+								"/api/v1/profile",
+								"/api/v1/customers",
+								"/api/v1/products/*/take-up")
 								.authenticated()
 						.anyRequest().permitAll())
 				.exceptionHandling(exceptions -> exceptions

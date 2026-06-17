@@ -19,12 +19,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import za.co.entelect.java_devcamp.dto.ProductTakeUpResponse;
+import za.co.entelect.java_devcamp.dto.response.ProductTakeUpResponse;
 import za.co.entelect.java_devcamp.entity.Product;
 import za.co.entelect.java_devcamp.service.ProductService;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/products")
 @Tag(name = "Products", description = "Product catalogue endpoints")
 public class ProductController {
 
@@ -36,47 +36,37 @@ public class ProductController {
 		this.productService = productService;
 	}
 
-	@GetMapping("/products/getAll")
-	@Operation(summary = "Fetch all products", description = "Returns every product in the catalogue")
+	@GetMapping
+	@Operation(summary = "List all products", description = "Returns every product in the catalogue")
 	@ApiResponse(responseCode = "200", description = "Products retrieved successfully", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Product.class))))
-	public List<Product> fetchProducts() {
-		logger.info("Fetch all products requested");
+	public List<Product> listProducts() {
+		logger.info("List all products requested");
 		return productService.fetchAllProducts();
 	}
 
-	@GetMapping("/products/get/{id}")
-	@Operation(summary = "Fetch product by id", description = "Returns a single product from the catalogue by its id")
+	@GetMapping("/{id}")
+	@Operation(summary = "Get product by ID", description = "Returns a single product from the catalogue")
 	@ApiResponse(responseCode = "200", description = "Product retrieved successfully", content = @Content(schema = @Schema(implementation = Product.class)))
 	@ApiResponse(responseCode = "404", description = "Product not found")
-	public Product fetchProductById(@PathVariable Long id) {
-		logger.info("Fetch product by id requested: id={}", id);
+	public Product getProduct(@PathVariable Long id) {
+		logger.info("Get product requested: id={}", id);
 		return productService.fetchProductById(id);
 	}
 
-	// Get eligible products for a customer
-	@GetMapping("/products/getEligible/{customerId}")
-	@Operation(summary = "Fetch eligible products for a customer", description = "Returns a list of products that are eligible for a customer")
-	@ApiResponse(responseCode = "200", description = "Eligible products retrieved successfully", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Product.class))))
-	@ApiResponse(responseCode = "404", description = "Customer not found")
-	public List<Product> fetchEligibleProducts(@PathVariable Long customerId) {
-		logger.info("Fetch eligible products for customer requested: customerId={}", customerId);
-		return productService.fetchEligibleProducts(customerId);
-	}
-
-	@PostMapping("/products/takeUp/{productId}")
+	@PostMapping("/{productId}/take-up")
 	@Operation(
 			summary = "Check product take-up eligibility",
-			description = "Returns whether the logged-in customer is eligible to take up the given product based on their customer type",
+			description = "Returns whether the authenticated customer is eligible to take up the given product",
 			security = @SecurityRequirement(name = "bearer-jwt"))
 	@ApiResponse(responseCode = "200", description = "Eligibility result returned", content = @Content(schema = @Schema(implementation = ProductTakeUpResponse.class)))
 	@ApiResponse(responseCode = "401", description = "Not authenticated")
-	@ApiResponse(responseCode = "404", description = "Product not found")
-	public ProductTakeUpResponse takeUpProduct(
+	@ApiResponse(responseCode = "404", description = "Product or customer not found")
+	public ProductTakeUpResponse checkTakeUpEligibility(
 			@AuthenticationPrincipal Jwt jwt,
 			@PathVariable Long productId) {
 		String email = jwt.getSubject();
-		logger.info("Take up product requested: email={}, productId={}", email, productId);
-		return productService.takeUpProduct(email, productId);
+		logger.info("Product take-up eligibility check: email={}, productId={}", email, productId);
+		return productService.checkTakeUpEligibility(email, productId);
 	}
 
 }

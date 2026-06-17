@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import za.co.entelect.java_devcamp.dto.ProductTakeUpResponse;
+import za.co.entelect.java_devcamp.dto.response.ProductTakeUpResponse;
 import za.co.entelect.java_devcamp.entity.Product;
 import za.co.entelect.java_devcamp.exception.ProductNotFoundException;
 import za.co.entelect.java_devcamp.repository.ProductCustomerTypeRepository;
@@ -42,7 +42,7 @@ public class ProductService {
 		return productRepository.findActiveEligibleForCustomerType(customerTypesId);
 	}
 
-	public ProductTakeUpResponse takeUpProduct(String email, Long productId) {
+	public ProductTakeUpResponse checkTakeUpEligibility(String email, Long productId) {
 		Map<String, Object> customer = customerService.fetchCustomerByEmail(email);
 		Long customerId = ((Number) customer.get("customer_id")).longValue();
 		Long customerTypesId = extractCustomerTypesId(customer);

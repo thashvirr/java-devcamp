@@ -8,16 +8,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import za.co.entelect.java_devcamp.constant.CustomerType;
+import za.co.entelect.java_devcamp.dto.request.CreateCustomerRequest;
 import za.co.entelect.java_devcamp.entity.ApplicationUser;
-import za.co.entelect.java_devcamp.entity.Customer;
 import za.co.entelect.java_devcamp.exception.CustomerNotFoundException;
 import za.co.entelect.java_devcamp.exception.UserAlreadyExistsException;
 import za.co.entelect.java_devcamp.repository.ApplicationUserRepository;
 
 @Service
 public class CustomerService {
-
-	private static final long ADMIN_CUSTOMER_TYPE_ID = 5L;
 
 	private final JdbcTemplate jdbcTemplate;
 	private final ApplicationUserRepository applicationUserRepository;
@@ -39,7 +38,7 @@ public class CustomerService {
 	public List<Map<String, Object>> fetchCustomersForAuthenticatedUser(String email) {
 		Map<String, Object> authenticatedCustomer = fetchCustomerByEmail(email);
 		Object customerTypesId = authenticatedCustomer.get("customer_types_id");
-		if (customerTypesId instanceof Number number && number.longValue() == ADMIN_CUSTOMER_TYPE_ID) {
+		if (customerTypesId instanceof Number number && number.longValue() == CustomerType.ADMIN) {
 			return fetchAllCustomers();
 		}
 		return List.of(authenticatedCustomer);
@@ -64,9 +63,9 @@ public class CustomerService {
 	}
 
 	@Transactional
-	public Map<String, Object> createCustomer(Customer customer) {
-		if (applicationUserRepository.findFirstByEmailIgnoreCase(customer.getEmail()).isPresent()) {
-			throw new UserAlreadyExistsException(customer.getEmail());
+	public Map<String, Object> createCustomer(CreateCustomerRequest request) {
+		if (applicationUserRepository.findFirstByEmailIgnoreCase(request.getEmail()).isPresent()) {
+			throw new UserAlreadyExistsException(request.getEmail());
 		}
 
 		Map<String, Object> createdCustomer = jdbcTemplate.queryForMap(
@@ -86,15 +85,15 @@ public class CustomerService {
 				)
 				RETURNING *
 				""",
-				customer.getEmail(),
-				customer.getFirstName(),
-				customer.getIdNumber(),
-				customer.getLastName(),
+				request.getEmail(),
+				request.getFirstName(),
+				request.getIdNumber(),
+				request.getLastName(),
 				1L);
 
 		ApplicationUser applicationUser = new ApplicationUser();
-		applicationUser.setEmail(customer.getEmail());
-		applicationUser.setPassword(passwordEncoder.encode(customer.getPassword()));
+		applicationUser.setEmail(request.getEmail());
+		applicationUser.setPassword(passwordEncoder.encode(request.getPassword()));
 		applicationUser.setRole("user");
 		applicationUserRepository.save(applicationUser);
 

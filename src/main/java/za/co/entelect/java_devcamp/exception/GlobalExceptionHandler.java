@@ -40,6 +40,12 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", ex.getMessage()));
 	}
 
+	@ExceptionHandler(IllegalStateException.class)
+	public ResponseEntity<Map<String, String>> handleIllegalState(IllegalStateException ex) {
+		logger.error("Invalid application state: {}", ex.getMessage());
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", ex.getMessage()));
+	}
+
 	@ExceptionHandler({ BadCredentialsException.class, AuthenticationException.class })
 	public ResponseEntity<Map<String, String>> handleAuthenticationFailure(AuthenticationException ex) {
 		logger.error("Authentication failed: {}", ex.getMessage());

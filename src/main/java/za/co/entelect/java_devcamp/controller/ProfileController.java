@@ -19,7 +19,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import za.co.entelect.java_devcamp.service.ProfileService;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/profile")
 @Tag(name = "Profile", description = "Authenticated user profile endpoints")
 public class ProfileController {
 
@@ -31,15 +31,15 @@ public class ProfileController {
 		this.profileService = profileService;
 	}
 
-	@GetMapping("/profile")
+	@GetMapping
 	@Operation(
-			summary = "Load authenticated user profile",
-			description = "Returns the CIS customer profile for the logged-in user",
+			summary = "Get authenticated user profile",
+			description = "Returns the application user record and linked CIS customer profile",
 			security = @SecurityRequirement(name = "bearer-jwt"))
-	@ApiResponse(responseCode = "200", description = "Profile retrieved successfully", content = @Content(schema = @Schema(additionalProperties = Schema.AdditionalPropertiesValue.TRUE, example = "{\"customer_id\": 3, \"email\": \"admin@entelect.co.za\", \"first_name\": \"admin\", \"last_name\": \"admin\", \"id_number\": \"\", \"customer_types_id\": 5}")))
+	@ApiResponse(responseCode = "200", description = "Profile retrieved successfully", content = @Content(schema = @Schema(additionalProperties = Schema.AdditionalPropertiesValue.TRUE, example = "{\"user_id\": 1, \"email\": \"admin@entelect.co.za\", \"role\": \"user\", \"customer\": {\"customer_id\": 3, \"email\": \"admin@entelect.co.za\", \"customer_types_id\": 5}}")))
 	@ApiResponse(responseCode = "401", description = "Not authenticated")
 	@ApiResponse(responseCode = "404", description = "User not found")
-	public Map<String, Object> loadProfile(@AuthenticationPrincipal Jwt jwt) {
+	public Map<String, Object> getProfile(@AuthenticationPrincipal Jwt jwt) {
 		String email = jwt.getSubject();
 		logger.info("Profile requested for email={}", email);
 		return profileService.loadProfile(email);

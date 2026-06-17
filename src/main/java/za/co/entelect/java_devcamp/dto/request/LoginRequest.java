@@ -1,4 +1,4 @@
-package za.co.entelect.java_devcamp.dto;
+package za.co.entelect.java_devcamp.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

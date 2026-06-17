@@ -1,21 +1,11 @@
-package za.co.entelect.java_devcamp.entity;
+package za.co.entelect.java_devcamp.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(
-		description = "Customer create request",
-		example = """
-				{
-				  "email": "jane.doe@example.com",
-				  "first_name": "Jane",
-				  "last_name": "Doe",
-				  "id_number": "9001015800085",
-				  "password": "MySecurePassword1$"
-				}
-				""")
-public class Customer {
+@Schema(description = "Request body for customer registration")
+public class CreateCustomerRequest {
 
 	@Schema(example = "jane.doe@example.com")
 	private String email;
@@ -35,7 +25,7 @@ public class Customer {
 	@Schema(example = "MySecurePassword1$", description = "Password for login credentials")
 	private String password;
 
-	public Customer() {
+	public CreateCustomerRequest() {
 	}
 
 	public String getEmail() {

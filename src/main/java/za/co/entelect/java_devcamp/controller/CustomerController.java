@@ -25,72 +25,84 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import za.co.entelect.java_devcamp.entity.Customer;
+import za.co.entelect.java_devcamp.dto.request.CreateCustomerRequest;
+import za.co.entelect.java_devcamp.entity.Product;
 import za.co.entelect.java_devcamp.service.CustomerService;
+import za.co.entelect.java_devcamp.service.ProductService;
 
 @RestController
-@RequestMapping("/api/v1")
-@Tag(name = "Customers", description = "Customer data endpoints")
+@RequestMapping("/api/v1/customers")
+@Tag(name = "Customers", description = "Customer management endpoints")
 public class CustomerController {
 
 	private static final Logger logger = LoggerFactory.getLogger(CustomerController.class);
 
 	private final CustomerService customerService;
+	private final ProductService productService;
 
-	public CustomerController(CustomerService customerService) {
+	public CustomerController(CustomerService customerService, ProductService productService) {
 		this.customerService = customerService;
+		this.productService = productService;
 	}
 
-	@GetMapping("/customers/get")
+	@GetMapping
 	@Operation(
-			summary = "Fetch customers",
-			description = "Returns the logged-in customer's data, or every customer when the logged-in user has customer_types_id = 5",
+			summary = "List customers",
+			description = "Returns the authenticated customer's record, or all customers when the user has admin customer type (ID 5)",
 			security = @SecurityRequirement(name = "bearer-jwt"))
 	@ApiResponse(responseCode = "200", description = "Customers retrieved successfully", content = @Content(array = @ArraySchema(schema = @Schema(additionalProperties = Schema.AdditionalPropertiesValue.TRUE, example = "{\"customer_id\": 1, \"name\": \"Jane Doe\"}"))))
 	@ApiResponse(responseCode = "401", description = "Not authenticated")
 	@ApiResponse(responseCode = "404", description = "Customer not found")
-	public List<Map<String, Object>> fetchCustomers(@AuthenticationPrincipal Jwt jwt) {
+	public List<Map<String, Object>> listCustomers(@AuthenticationPrincipal Jwt jwt) {
 		String email = jwt.getSubject();
-		logger.info("Fetch customers requested for email={}", email);
+		logger.info("List customers requested for email={}", email);
 		return customerService.fetchCustomersForAuthenticatedUser(email);
 	}
 
-	@GetMapping("/customers/get/{id}")
-	@Operation(summary = "Fetch customer by id", description = "Returns a single customer from the CIS schema by its id")
-	@ApiResponse(responseCode = "200", description = "Customer retrieved successfully", content = @Content(schema = @Schema(additionalProperties = Schema.AdditionalPropertiesValue.TRUE, example = "{\"customer_id\": 1, \"name\": \"Jane Doe\"}")))
+	@GetMapping("/{id}")
+	@Operation(summary = "Get customer by ID", description = "Returns a single customer from the CIS schema")
+	@ApiResponse(responseCode = "200", description = "Customer retrieved successfully", content = @Content(schema = @Schema(additionalProperties = Schema.AdditionalPropertiesValue.TRUE, example = "{\"customer_id\": 1, \"name\": \"Test User\"}")))
 	@ApiResponse(responseCode = "404", description = "Customer not found")
-	public Map<String, Object> fetchCustomerById(@PathVariable Long id) {
-		logger.info("Fetch customer by id requested: id={}", id);
+	public Map<String, Object> getCustomer(@PathVariable Long id) {
+		logger.info("Get customer requested: id={}", id);
 		return customerService.fetchCustomerById(id);
 	}
 
-	@PostMapping(value = "/customers/create", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(
-			summary = "Create a customer",
-			description = "Creates a new customer in the CIS schema and login credentials in auth.application_user",
+			summary = "Register a customer",
+			description = "Creates a customer in the CIS schema and login credentials in auth.application_user",
 			requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
 					required = true,
 					content = @Content(
 							mediaType = MediaType.APPLICATION_JSON_VALUE,
-							schema = @Schema(implementation = Customer.class),
+							schema = @Schema(implementation = CreateCustomerRequest.class),
 							examples = @ExampleObject(
 									name = "default",
-									summary = "New customer",
 									value = """
 											{
-											  "email": "jane.doe@example.com",
-											  "first_name": "Jane",
-											  "last_name": "Doe",
-											  "id_number": "9001015800085",
-											  "password": "MySecurePassword1$"
+											  "email": "test@user.com",
+											  "first_name": "Test",
+											  "last_name": "User",
+											  "id_number": "9000000000000",
+											  "password": "password"
 											}
 											"""))))
-	@ApiResponse(responseCode = "201", description = "Customer created successfully", content = @Content(schema = @Schema(additionalProperties = Schema.AdditionalPropertiesValue.TRUE, example = "{\"customer_id\": 4, \"email\": \"jane.doe@example.com\", \"first_name\": \"Jane\", \"last_name\": \"Doe\", \"id_number\": \"9001015800085\", \"customer_types_id\": 1}")))
+	@ApiResponse(responseCode = "201", description = "Customer created successfully", content = @Content(schema = @Schema(additionalProperties = Schema.AdditionalPropertiesValue.TRUE, example = "{\"customer_id\": 4, \"email\": \"test@user.com\", \"first_name\": \"Test\", \"last_name\": \"User\", \"id_number\": \"9000000000000\", \"customer_types_id\": 1}")))
 	@ApiResponse(responseCode = "409", description = "User with matching email already exists")
-	public ResponseEntity<Map<String, Object>> createCustomer(@RequestBody Customer customer) {
-		logger.info("Creating customer with email={}", customer.getEmail());
-		Map<String, Object> createdCustomer = customerService.createCustomer(customer);
+	public ResponseEntity<Map<String, Object>> createCustomer(@RequestBody CreateCustomerRequest request) {
+		logger.info("Creating customer with email={}", request.getEmail());
+		Map<String, Object> createdCustomer = customerService.createCustomer(request);
 		return ResponseEntity.status(HttpStatus.CREATED).body(createdCustomer);
+	}
+
+	@GetMapping("/{customerId}/eligible-products")
+	@Operation(summary = "List eligible products for a customer", description = "Returns products the customer is eligible for based on their customer type")
+	@ApiResponse(responseCode = "200", description = "Eligible products retrieved successfully", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Product.class))))
+	@ApiResponse(responseCode = "404", description = "Customer not found")
+	public List<Product> listEligibleProducts(@PathVariable Long customerId) {
+		logger.info("List eligible products requested: customerId={}", customerId);
+		return productService.fetchEligibleProducts(customerId);
 	}
 
 }

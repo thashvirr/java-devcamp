@@ -5,8 +5,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import za.co.entelect.java_devcamp.dto.LoginRequest;
-import za.co.entelect.java_devcamp.dto.LoginResponse;
+import za.co.entelect.java_devcamp.dto.request.LoginRequest;
+import za.co.entelect.java_devcamp.dto.response.LoginResponse;
 
 @Service
 public class AuthService {

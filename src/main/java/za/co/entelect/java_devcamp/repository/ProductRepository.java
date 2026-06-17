@@ -10,8 +10,6 @@ import za.co.entelect.java_devcamp.entity.Product;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-	List<Product> findByActiveTrue();
-
 	@Query("""
 			SELECT p FROM Product p
 			WHERE p.active = true

@@ -22,7 +22,7 @@ public class OpenApiConfig {
 								.type(SecurityScheme.Type.HTTP)
 								.scheme("bearer")
 								.bearerFormat("JWT")
-								.description("JWT obtained from POST /api/v1/auth/login")));
+								.description("JWT obtained from POST /api/v1/auth/login. Use header: Authorization: Bearer <token>")));
 	}
 
 }
