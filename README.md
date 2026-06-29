@@ -1,349 +1,192 @@
-# Java DevCamp — Product Shop API
+# DevCamp Services
 
-Spring Boot REST API for a bank product catalogue. Customers can browse products, check eligibility by customer type, and authenticate via JWT.
+## Table of contents
 
-**Stack:** Java 17 · Spring Boot 4.0.6 · PostgreSQL · Flyway · Spring Security (JWT)
+- [Summary](#summary)
+- [Quickstart](#quickstart)
+- [Prerequisites](#prerequisites)
+- [Interacting with the services](#interacting-with-the-services)
+  - [Auth Service](#auth-service)
+  - [KYC Service](#kyc-service)
+  - [DHA Service](#dha-service)
+  - [Credit Check Service](#credit-check-service)
+  - [Customer Information Store Service](#customer-information-store-service)
+  - [Postgres Database](#postgres-database)
+- [Postman Collections](#postman-collections)
+- [SoapUI](#soapui)
+
+## Summary
+
+There are five services available for consumption as part of the DevCamp practical exercise.
+
+- **Auth:** REST web service to obtain JWT tokens for auth with other services
+- **KYC:** REST web service to obtain KYC (Know Your Customer) information for customers
+- **DHA:** REST web service to obtain DHA (Dept. of Home Affairs) information for customers
+- **Credit Check:** SOAP web service to perform a credit check for customers
+- **Customer Information Store Service:** REST web service for maintaining customer information
+
+## Quickstart
+
+The services are built from local source and orchestrated via [Docker Compose](compose.yaml). Two of the services (KYC, DHA) require an RSA public key for JWT validation, passed in as the `PUB_KEY` environment variable.
+
+Linux shell:
+```bash
+export PUB_KEY=$(cat app.pub) && docker compose up --build
+```
+
+PowerShell:
+```PowerShell
+$env:PUB_KEY = Get-Content app.pub; docker compose up --build
+```
+
+This will build all five services and start them alongside a PostgreSQL database. Once running:
+
+| Service | URL |
+|---------|-----|
+| Auth | http://localhost:8080 |
+| KYC | http://localhost:8081 |
+| DHA | http://localhost:8082 |
+| Credit Check | http://localhost:8083 |
+| CIS | http://localhost:8084 |
+| PostgreSQL | localhost:5432 |
 
 ## Prerequisites
 
-- Java 17+
-- Maven 3.9+
-- PostgreSQL with pre-existing `cis` and `auth` schemas (customer and user data)
-- Database connection configured in `src/main/resources/application.properties`
+### Docker
 
-## Quick start
+You will need a local installation of Docker (with Compose V2) or an alternative containerization platform. See the [Docker for Windows](https://holocrons.entelect.co.za/code/local-development/docker-for-windows) holocron for information on alternatives to Docker Desktop.
+
+### Postman
+
+It is not a requirement to have Postman installed but it would be beneficial as there are a few Postman collections available that could help you understand how to interact with the services. See the [Postman Collections](#postman-collections) section further down.
+
+There is also a SoapUI project available for testing calls to the SOAP webservice (see the [SoapUI](#soapui) section further down), but the same endpoint is also available in the Postman collections.
+
+## Interacting with the services
+
+### Auth Service
+
+The Auth service can be accessed at http://localhost:8080 and exposes a single endpoint:
+
+- [POST] `/token`
+
+The service requires Basic Auth, making use of a username and password.
+
+This should be used internally in the product/fulfillment service for making requests to third party services. No additional user details are to be stored here — you will need to manage customer credentials on your end.
+
+There are 2 users currently configured in the DB:
+
+1. `admin@entelect.co.za` / `password`
+2. `products@entelect.co.za` / `SpringProducts01$`
+
+The `admin@entelect.co.za` account can be used for your system-to-system communication.
+
+The service responds to a successful request to the `/token` endpoint with a JWT in the response body. This JWT can be used for subsequent calls to the [KYC](#kyc-service), [DHA](#dha-service), and [CIS](#customer-information-store-service) services.
+
+The returned JWT is valid only for an hour, after which time a new JWT will have to be obtained from the Auth service.
+
+### KYC Service
+
+The KYC service can be accessed at http://localhost:8081 and exposes a single endpoint:
+
+- [GET] `/kyc/{customerId}`
+
+The service requires a Bearer token in the Authorization header. The bearer token must be a JWT obtained from the Auth service.
+
+The service is documented in the accompanying [OpenAPI document](kyc.yaml) or at http://localhost:8081/swagger/index.html when the service is running.
+
+### DHA Service
+
+The DHA service can be accessed at http://localhost:8082 and exposes four endpoints:
+
+- [GET] `/status/people`
+- [GET] `/status/marital/{idNumber}`
+- [GET] `/status/duplicateId/{idNumber}`
+- [GET] `/status/living/{idNumber}`
+
+The service requires a Bearer token in the Authorization header. The bearer token must be a JWT obtained from the Auth service.
+
+The service is documented in the accompanying [OpenAPI document](dha.yaml) or at http://localhost:8082/swagger/index.html when the service is running.
+
+### Credit Check Service
+
+The Credit Check service can be accessed at http://localhost:8083 and exposes a single endpoint:
+
+- `/CreditCheck`
+
+The service requires Basic Auth, making use of a username and password.
+
+The service is documented in the accompanying [WSDL document](creditcheck.wsdl).
+
+### Customer Information Store Service
+
+The customer information store can be accessed on http://localhost:8084 and exposes 13 endpoints for maintaining customer information:
+
+- [GET] `/v1/customers`
+- [GET] `/v1/customer/{customer_id}`
+- [POST] `/v1/customer/`
+- [GET] `/v1/customer/`
+- [GET] `/v1/customerTypes`
+- [POST] `/v1/customerTypes`
+- [PUT] `/v1/customer/{customerId}/customerTypes/{customerTypeId}`
+- [GET] `/v1/customer/{customerId}/documents`
+- [GET] `/v1/customer/{customerId}/documents/{documentId}`
+- [POST] `/v1/customer/{customerId}/documents`
+- [GET] `/v1/accountTypes`
+- [POST] `/v1/accountTypes`
+- [POST] `/v1/customer/{customerId}/accounts/{accountTypeId}`
+
+This service requires a Bearer Token in JWT format to be able to be accessed.
+
+The service is documented in the accompanying [OpenAPI document](customer-information.yaml).
+
+### Postgres Database
+
+There is a PostgreSQL database deployed along with the services. You can use this database to store information for the services that you build.
+
+If you are running your services in the Docker environment, you can use the Docker container name as the hostname for the database:
+
+```yaml
+spring:
+  datasource:
+    url: jdbc:postgresql://DevCamp-Postgres-db:5432/postgres
+    username: user
+    password: password
+    driverClassName: org.postgresql.Driver
+```
+
+If you add the container to the docker compose file, it will be able to access the network by default. If you want to run the docker image separately, you will need to specify the network:
 
 ```bash
-mvn spring-boot:run
+docker run --network devcamp-starter_default -p 8084:8080 devcamp-cis-service:latest
 ```
 
-The application starts on **http://localhost:3000**.
+If you are running your application locally (i.e. IntelliJ, mvnw or java run) then you would need to specify the db hostname as localhost. It is recommended to use Spring profiles — one for running the service locally and another for running via Docker.
 
-| Resource | URL |
-|----------|-----|
-| Home page | http://localhost:3000/ |
-| Health check | http://localhost:3000/health |
+## Postman Collections
 
-## Project structure
+In the [/Postman](Postman/) folder of this repository, there are five collections that can be imported into your Postman workspace:
 
-```
-src/main/java/za/co/entelect/java_devcamp/
-├── JavaDevcampApplication.java    # Application entry point
-├── config/                        # Security and JSON error handlers
-├── constant/                      # Shared constants (e.g. customer types)
-├── controller/                    # REST and MVC controllers
-├── dto/
-│   ├── request/                   # Incoming request bodies
-│   └── response/                  # Outgoing response bodies
-├── entity/                        # JPA entities (public schema)
-├── exception/                     # Custom exceptions and global handler
-├── repository/                    # Spring Data JPA repositories
-└── service/                       # Business logic
-```
+- [Auth Service.postman_collection.json](Postman/Auth%20Service.postman_collection.json)
+- [KYC Service.postman_collection.json](Postman/KYC%20Service.postman_collection.json)
+- [DHA Service.postman_collection.json](Postman/DHA%20Service.postman_collection.json)
+- [Credit Check Service.postman_collection.json](Postman/Credit%20Check%20Service.postman_collection.json)
+- [Customer Information Store.postman_collection.json](Postman/)
 
-## Authentication
+Additionally there is also an environment that can be imported into your workspace:
 
-Protected endpoints require a JWT in the `Authorization` header:
+- [Docker.postman_environment.json](Docker.postman_environment.json)
 
-```
-Authorization: Bearer <token>
-```
+These collections and environment will enable you to test all five of the services if they are running through Docker Compose.
 
-Obtain a token via `POST /api/v1/auth/login`. Tokens expire after 3600 seconds (configurable via `jwt.expiry-seconds`).
+It is worth pointing out that the `POST Token` request in the `Auth Service` collection includes a Test Script which automatically writes the returned JWT into the `{{jwt}}` variable of the active environment. This means that you do not have to manually copy and paste the JWT in order to test the KYC Service and DHA Service.
 
----
+![Postman Test Script](assets/postman_testscript.png)
 
-## API reference
+Finally, it is also important to note that the Postman environment imported above needs to be selected as the active environment in the top right corner of Postman in order for the variables defined in it to take effect.
 
-Base path: `/api/v1`
+![Postman Environment](assets/postman_environment.png)
 
-### Authentication
+## SoapUI
 
-#### `POST /api/v1/auth/login`
-
-Authenticate and receive a JWT.
-
-**Auth:** None
-
-**Request body:**
-
-```json
-{
-  "email": "products@entelect.co.za",
-  "password": "SpringProducts01$"
-}
-```
-
-**Response `200`:**
-
-```json
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "tokenType": "Bearer",
-  "expiresIn": 3600
-}
-```
-
-**Response `401`:** Invalid email or password
-
----
-
-### Profile
-
-#### `GET /api/v1/profile`
-
-Returns the authenticated user's application record and linked CIS customer profile.
-
-**Auth:** Required
-
-**Response `200`:**
-
-```json
-{
-  "user_id": 1,
-  "email": "admin@entelect.co.za",
-  "role": "user",
-  "customer": {
-    "customer_id": 3,
-    "email": "admin@entelect.co.za",
-    "first_name": "admin",
-    "last_name": "admin",
-    "customer_types_id": 5
-  }
-}
-```
-
-**Response `401`:** Not authenticated  
-**Response `404`:** User not found
-
----
-
-### Customers
-
-#### `GET /api/v1/customers`
-
-Returns the authenticated customer's record. Admin users (`customer_types_id = 5`) receive all customers.
-
-**Auth:** Required
-
-**Response `200`:** Array of customer objects
-
-**Response `401`:** Not authenticated  
-**Response `404`:** Customer not found
-
----
-
-#### `GET /api/v1/customers/{id}`
-
-Returns a single customer by ID from the CIS schema.
-
-**Auth:** None
-
-**Response `200`:** Customer object
-
-**Response `404`:** Customer not found
-
----
-
-#### `POST /api/v1/customers`
-
-Registers a new customer in CIS and creates login credentials in `auth.application_user`.
-
-**Auth:** None
-
-**Request body:**
-
-```json
-{
-  "email": "jane.doe@example.com",
-  "first_name": "Jane",
-  "last_name": "Doe",
-  "id_number": "9001015800085",
-  "password": "MySecurePassword1$"
-}
-```
-
-**Response `201`:** Created customer object (includes `customer_types_id`, default `1`)
-
-**Response `409`:** Email already registered
-
----
-
-#### `GET /api/v1/customers/{customerId}/eligible-products`
-
-Returns active products the customer is eligible for based on their customer type.
-
-**Auth:** None
-
-**Response `200`:** Array of product objects
-
-**Response `404`:** Customer not found
-
----
-
-### Products
-
-#### `GET /api/v1/products`
-
-Returns the full product catalogue.
-
-**Auth:** None
-
-**Response `200`:** Array of product objects
-
----
-
-#### `GET /api/v1/products/{id}`
-
-Returns a single product by ID.
-
-**Auth:** None
-
-**Response `200`:** Product object
-
-**Response `404`:** Product not found
-
----
-
-#### `POST /api/v1/products/{productId}/take-up`
-
-Checks whether the authenticated customer is eligible to take up a product. Does not persist a take-up — returns an eligibility result only.
-
-**Auth:** Required
-
-**Response `200`:**
-
-```json
-{
-  "customer_id": 1,
-  "email": "jane.doe@example.com",
-  "product_id": 2,
-  "product_name": "Gold Cheque Account",
-  "eligible": true
-}
-```
-
-**Response `401`:** Not authenticated  
-**Response `404`:** Product or customer not found
-
----
-
-### Actuator
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/health` | Application health status |
-| `GET` | `/info` | Build and application metadata |
-| `GET` | `/metrics` | Runtime metrics |
-
----
-
-## Error responses
-
-All API errors return JSON:
-
-```json
-{
-  "error": "Human-readable message"
-}
-```
-
-| Status | When |
-|--------|------|
-| `401` | Missing or invalid JWT, or bad login credentials |
-| `403` | Authenticated but not authorized |
-| `404` | Customer, product, or user not found |
-| `409` | Duplicate email on registration |
-| `500` | Unexpected server error |
-
----
-
-## Database
-
-Flyway manages the `public` schema (products, fulfilment types, product–customer-type eligibility). The `cis` and `auth` schemas are external and must exist before startup.
-
-| Schema | Purpose |
-|--------|---------|
-| `public` | Product catalogue (managed by Flyway) |
-| `cis` | Customer records |
-| `auth` | Application users and credentials |
-
-### Customer types (eligibility)
-
-| ID | Type |
-|----|------|
-| 1 | Individual |
-| 2 | Sole Proprietor |
-| 3 | Non-Profit |
-| 4 | CIPC Registered |
-| 5 | Admin |
-
----
-
-## Configuration
-
-Key settings in `application.properties`:
-
-| Property | Default | Description |
-|----------|---------|-------------|
-| `server.port` | `3000` | HTTP port |
-| `spring.datasource.url` | `jdbc:postgresql://localhost:5432/postgres` | Database URL |
-| `jwt.secret` | (dev key) | HS256 signing secret (min 32 chars) |
-| `jwt.expiry-seconds` | `3600` | Token lifetime |
-
----
-
-## Testing
-
-The project uses **JUnit 5** and **Mockito** for unit tests. Service-layer tests mock dependencies (repositories, `JdbcTemplate`, etc.) so they run quickly without a database.
-
-### Run tests
-
-```bash
-# All tests
-mvn test
-
-# Single test class
-mvn test -Dtest=ProductServiceTest
-```
-
-### Test layout
-
-```
-src/test/java/za/co/entelect/java_devcamp/
-├── JavaDevcampApplicationTests.java          # Spring context load (@SpringBootTest)
-└── service/
-    ├── ApplicationUserDetailsServiceTest.java
-    ├── AuthServiceTest.java
-    ├── CustomerServiceTest.java
-    ├── ProductServiceTest.java
-    └── ProfileServiceTest.java
-```
-
-### Coverage
-
-| Test class | What it covers |
-|------------|----------------|
-| `JavaDevcampApplicationTests` | Application context starts successfully |
-| `ProductServiceTest` | Fetch products, eligible products by customer type, take-up eligibility (active/inactive, type match/mismatch, not found) |
-| `CustomerServiceTest` | Fetch by id/email, admin vs non-admin listing, customer creation, duplicate email rejection |
-| `AuthServiceTest` | Successful login returns JWT response |
-| `ProfileServiceTest` | Profile with/without customer record, user not found |
-| `ApplicationUserDetailsServiceTest` | Load user details for Spring Security, username not found |
-
-Service tests use `@ExtendWith(MockitoExtension.class)` with `@Mock` and `@InjectMocks`. Assertions use **AssertJ** (included via Spring Boot test starters).
-
----
-
-## Development
-
-```bash
-# Compile
-mvn compile
-
-# Run tests (see Testing section above)
-mvn test
-
-# Package
-mvn package
-```
+In the [/SoapUI](SoapUI/) folder of this repository, there is a [SoapUI project file](SoapUI/creditcheck-soapui-project.xml) which includes some test SOAP API calls to the Credit Check Service.
